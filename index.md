@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -18,6 +17,3 @@
   <footer>
     <p>© 2025. All rights reserved.</p>
   </footer>
-
-</body>
-</html>
