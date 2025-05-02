@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <title>About - Jia Jun</title>
 
   <!-- Header section: Name and brief intro -->
   <h1>About</h1>
