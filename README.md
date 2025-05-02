@@ -1,1 +1,0 @@
-# aijnuj1456.github.io
