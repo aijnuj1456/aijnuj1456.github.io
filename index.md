@@ -2,40 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Jia Jun</title>
-
-  <!-- Basic styles for layout and readability -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f9f9f9;
-      color: #333;
-    }
-    h1, h2 {
-      color: #2c3e50;
-    }
-    a {
-      color: #2980b9;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .section {
-      margin-bottom: 40px;
-    }
-    .profile-pic {
-      width: 150px;
-      border-radius: 50%;
-    }
-  </style>
-</head>
-<body>
 
   <!-- Header section: Name and brief intro -->
-  <h1>Jia Jun</h1>
-  <p>Hello! I'm a recent <strong>Quantitative Finance and Economics</strong> graduate from the National University of Singapore.</p>
+  <h1>About</h1>
+  <p>Hello! I'm Jia Jun, a recent <strong>Quantitative Finance and Economics</strong> graduate from the National University of Singapore, this site showcases a selection of my past projects and current research interests.</p>
 
   <!-- Contact section -->
   <div class="section">
