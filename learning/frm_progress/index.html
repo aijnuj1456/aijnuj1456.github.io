@@ -1,186 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>FRM Part I Progress Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>📘 FRM Part I Progress Tracker</title>
   <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #000;
+      --card: #fff;
+      --bar-bg: #eee;
+      --bar-fill: #4caf50;
+      --btn-bg: #2196f3;
+      --btn-hover: #1565c0;
+    }
+
+    body.dark {
+      --bg: #121212;
+      --text: #f0f0f0;
+      --card: #1e1e1e;
+      --bar-bg: #333;
+      --bar-fill: #81c784;
+      --btn-bg: #90caf9;
+      --btn-hover: #64b5f6;
+    }
+
     body {
       font-family: sans-serif;
-      max-width: 900px;
+      background: var(--bg);
+      color: var(--text);
+      max-width: 960px;
       margin: auto;
       padding: 2em;
-      background: #f9f9f9;
+      transition: background 0.3s, color 0.3s;
     }
-    h1, h2 {
-      text-align: center;
-    }
+
+    h1, h2 { text-align: center; }
+
     .book {
+      background: var(--card);
       margin-bottom: 2em;
       padding: 1em;
-      background: white;
       border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
-    .progress-container, .chapter-bar {
-      background: #eee;
-      border-radius: 5px;
-      overflow: hidden;
+
+    .meta {
+      color: gray;
       margin-bottom: 0.5em;
     }
-    .progress-bar, .chapter-fill {
+
+    .progress-container {
+      background: var(--bar-bg);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 1em;
+    }
+
+    .progress-bar {
       height: 20px;
-      background: #4caf50;
+      background: var(--bar-fill);
       color: white;
       text-align: center;
       line-height: 20px;
       font-size: 0.8em;
+      width: 0%;
+      transition: width 0.3s;
     }
-    .meta {
-      font-size: 0.9em;
-      color: #666;
-      margin-bottom: 0.5em;
+
+    .chapter-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5em 0;
+      border-bottom: 1px solid #ddd;
     }
-    ul {
-      padding-left: 1.2em;
+
+    .chapter-row button,
+    .top-controls button {
+      background: var(--btn-bg);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 6px 10px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s;
     }
-    li {
-      margin-bottom: 0.6em;
+
+    .chapter-row button:hover,
+    .top-controls button:hover {
+      background: var(--btn-hover);
     }
-    #top-section {
-      text-align: center;
+
+    .top-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1em;
+      flex-wrap: wrap;
       margin-bottom: 2em;
     }
-    button {
-      margin: 10px auto;
-      padding: 8px 12px;
-      border: none;
-      background-color: #2196f3;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1em;
-    }
-    .notes-button {
-      text-align: center;
-      margin-top: 3em;
+
+    @media (max-width: 600px) {
+      .chapter-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5em;
+      }
     }
   </style>
 </head>
 <body>
   <h1>📘 FRM Part I Progress Tracker</h1>
-  <div id="top-section">
-    <div id="countdown"></div>
-    <div id="streak"></div>
-    <button onclick="exportCSV()">📤 Export to CSV</button>
+  <div class="top-controls">
+    <button onclick="toggleDarkMode()">🌓 Dark Mode</button>
+    <button onclick="toggleShowAll()" id="toggle-show-btn">🙈 Show Only Incomplete</button>
+    <button onclick="resetAllChapters()">🔄 Reset All</button>
+    <label>
+      📅 Exam Date:
+      <input type="date" id="exam-date" onchange="showCountdown()" />
+      <span id="countdown" style="margin-left: 0.5em; font-weight: bold;"></span>
+    </label>
   </div>
-  <div id="status">Loading...</div>
+  <div id="tracker"></div>
 
-  <div class="notes-button">
-    <a href="https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE" target="_blank">
-      <button>📊 Open My Progress Spreadsheet</button>
-    </a>
-    <br><br>
-    <a href="https://www.notion.so/FRM-Part-1-1f6e58e589bb8005992ac8fcfded0296?pvs=4" target="_blank">
-      <button>📓 View My Live FRM Notes</button>
-    </a>
-  </div>
+<script>
+let showOnlyIncomplete = false;
+let fullData = null;
+let completedChapters = {};
 
-  <script>
-    async function loadProgress() {
-      const res = await fetch("progress.json");
-      const data = await res.json();
-      const examDate = new Date(data.exam_date);
-      showCountdown(examDate);
-      const chapters = data.chapters;
-      calculateStreak(chapters);
-      const books = groupByBook(chapters);
-      const weights = data.book_weights;
+fetch("progress.json")
+  .then(res => res.json())
+  .then(data => {
+    fullData = data;
+    completedChapters = JSON.parse(localStorage.getItem("frmProgress") || '{}');
+    renderProgress();
+  })
+  .catch(err => console.error("Failed to load progress.json:", err));
 
-      let html = "";
-      for (const book in books) {
-        const bookChapters = books[book];
-        const weight = weights[book] * 100;
-        let total = 0, done = 0;
+function toggleDarkMode() {
+  document.body.classList.toggle("dark");
+}
 
-        bookChapters.forEach(ch => {
-          total += ch.estimated_time_hr;
-          if (ch.progress === 100) done += ch.estimated_time_hr;
-        });
+function groupByBook(chapters) {
+  return chapters.reduce((acc, ch) => {
+    if (!acc[ch.book]) acc[ch.book] = [];
+    acc[ch.book].push(ch);
+    return acc;
+  }, {});
+}
 
-        const percent = total ? Math.round((done / total) * 100) : 0;
+function renderProgress() {
+  const books = groupByBook(fullData.chapters);
+  const tracker = document.getElementById("tracker");
+  tracker.innerHTML = "";
 
-        html += `<div class="book">
-          <h2>${book} (${weight}%)</h2>
-          <div class="meta">⏱ Completed ${done}h / ${total}h</div>
-          <div class="progress-container">
-            <div class="progress-bar" style="width:${percent}%">${percent}%</div>
-          </div>
-          <ul>`;
+  for (const book in books) {
+    const bookId = book.replace(/\s+/g, "_");
+    const chapters = books[book];
 
-        bookChapters.forEach(ch => {
-          const percentDone = ch.progress;
-          const dateStr = ch.date_read ? `📅 ${ch.date_read}` : "";
-          const revStr = (ch.revisions || []).length > 0 ? `🔁 ${ch.revisions.join(', ')}` : "";
-          html += `<li>
-            <strong>${ch.chapter_code}:</strong> ${ch.title} (${ch.estimated_time_hr}h) ${dateStr} ${revStr}
-            <div class="chapter-bar">
-              <div class="chapter-fill" style="width:${percentDone}%; background:#2196f3">${percentDone}%</div>
-            </div>
-          </li>`;
-        });
+    const container = document.createElement("div");
+    container.className = "book";
+    container.id = `book-${bookId}`;
 
-        html += "</ul></div>";
-      }
+    const title = document.createElement("h2");
+    title.textContent = `${book} (${fullData.book_weights[book] * 100}%)`;
 
-      document.getElementById("status").innerHTML = html;
-    }
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.id = `meta-${bookId}`;
 
-    function showCountdown(examDate) {
-      const today = new Date();
-      const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
-      const el = document.getElementById("countdown");
-      el.innerHTML = diff >= 0
-        ? `⏳ <strong>${diff} day${diff !== 1 ? "s" : ""} left until the FRM Part I exam (${examDate.toDateString()})</strong>`
-        : `✅ <strong>Exam was on ${examDate.toDateString()}</strong>`;
-    }
+    const progressContainer = document.createElement("div");
+    progressContainer.className = "progress-container";
+    const progressBar = document.createElement("div");
+    progressBar.className = "progress-bar";
+    progressBar.id = `bar-${bookId}`;
+    progressContainer.appendChild(progressBar);
 
-    function calculateStreak(chapters) {
-      const set = new Set(chapters.map(ch => ch.date_read).filter(Boolean));
-      let streak = 0, today = new Date();
-      today.setHours(0, 0, 0, 0);
-      while (set.has(today.toISOString().slice(0, 10))) {
-        streak++;
-        today.setDate(today.getDate() - 1);
-      }
-      document.getElementById("streak").innerHTML = `🔥 <strong>Current Study Streak: ${streak} day${streak !== 1 ? "s" : ""}</strong>`;
-    }
+    container.appendChild(title);
+    container.appendChild(meta);
+    container.appendChild(progressContainer);
 
-    function groupByBook(chapters) {
-      return chapters.reduce((acc, ch) => {
-        if (!acc[ch.book]) acc[ch.book] = [];
-        acc[ch.book].push(ch);
-        return acc;
-      }, {});
-    }
+    let done = 0;
+    chapters.forEach((ch, i) => {
+      const id = `${ch.chapter_code.replace(/[^a-zA-Z0-9]/g, "")}_${i}`;
+      const isDone = completedChapters[id] === 1;
+      if (isDone) done++;
 
-    function exportCSV() {
-      fetch("progress.json")
-        .then(res => res.json())
-        .then(data => {
-          let csv = "Book,Chapter Code,Title,Done,Estimated Hours,Date Read,Revisions\\n";
-          data.chapters.forEach(ch => {
-            csv += `"${ch.book}","${ch.chapter_code}","${ch.title}",${ch.progress}%,${ch.estimated_time_hr},"${ch.date_read}","${(ch.revisions || []).join("; ")}"\\n`;
-          });
-          const blob = new Blob([csv], { type: "text/csv" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "frm_progress.csv";
-          a.click();
-        });
-    }
+      if (showOnlyIncomplete && isDone) return;
 
-    loadProgress();
-  </script>
+      const row = document.createElement("div");
+      row.className = "chapter-row";
+      row.id = `row-${id}`;
+
+      const label = document.createElement("span");
+      label.innerHTML = `<strong>${ch.title}</strong> <span style='color:#2196f3'>[${ch.chapter_code}]</span>`;
+
+      const btn = document.createElement("button");
+      btn.innerHTML = "✅";
+      btn.onclick = () => markComplete(bookId, id);
+
+      row.appendChild(label);
+      row.appendChild(btn);
+      container.appendChild(row);
+    });
+
+    const percent = Math.round((done / chapters.length) * 100);
+    progressBar.style.width = percent + "%";
+    progressBar.textContent = percent + "%";
+    meta.textContent = `⏱ Completed ${done * 3}h / ${chapters.length * 3}h`;
+
+    tracker.appendChild(container);
+  }
+}
+
+function markComplete(bookId, id) {
+  completedChapters[id] = 1;
+  localStorage.setItem("frmProgress", JSON.stringify(completedChapters));
+  renderProgress();
+}
+
+function resetAllChapters() {
+  localStorage.removeItem("frmProgress");
+  completedChapters = {};
+  renderProgress();
+}
+
+function toggleShowAll() {
+  showOnlyIncomplete = !showOnlyIncomplete;
+  document.getElementById("toggle-show-btn").textContent = showOnlyIncomplete ? "👀 Show All" : "🙈 Show Only Incomplete";
+  renderProgress();
+}
+
+function showCountdown() {
+  const input = document.getElementById("exam-date");
+  const countdown = document.getElementById("countdown");
+  if (!input || !input.value) return;
+  const examDate = new Date(input.value);
+  const today = new Date();
+  const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+  countdown.textContent = diff >= 0 ? `(${diff} day${diff !== 1 ? "s" : ""} left)` : `(exam was on ${examDate.toDateString()})`;
+}
+</script>
 </body>
 </html>
