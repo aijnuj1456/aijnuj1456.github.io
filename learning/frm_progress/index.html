@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FRM Part I Progress Tracker</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 900px;
+      margin: auto;
+      padding: 2em;
+      background: #f9f9f9;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .book {
+      margin-bottom: 2em;
+      padding: 1em;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .progress-container, .chapter-bar {
+      background: #eee;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 0.5em;
+    }
+    .progress-bar, .chapter-fill {
+      height: 20px;
+      background: #4caf50;
+      color: white;
+      text-align: center;
+      line-height: 20px;
+      font-size: 0.8em;
+    }
+    .meta {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 0.5em;
+    }
+    ul {
+      padding-left: 1.2em;
+    }
+    li {
+      margin-bottom: 0.6em;
+    }
+    #top-section {
+      text-align: center;
+      margin-bottom: 2em;
+    }
+    button {
+      margin: 10px auto;
+      padding: 8px 12px;
+      border: none;
+      background-color: #2196f3;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .notes-button {
+      text-align: center;
+      margin-top: 3em;
+    }
+  </style>
+</head>
+<body>
+  <h1>📘 FRM Part I Progress Tracker</h1>
+  <div id="top-section">
+    <div id="countdown"></div>
+    <div id="streak"></div>
+    <button onclick="exportCSV()">📤 Export to CSV</button>
+  </div>
+  <div id="status">Loading...</div>
+
+  <div class="notes-button">
+    <a href="https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID_HERE" target="_blank">
+      <button>📊 Open My Progress Spreadsheet</button>
+    </a>
+    <br><br>
+    <a href="https://www.notion.so/FRM-Part-1-1f6e58e589bb8005992ac8fcfded0296?pvs=4" target="_blank">
+      <button>📓 View My Live FRM Notes</button>
+    </a>
+  </div>
+
+  <script>
+    async function loadProgress() {
+      const res = await fetch("progress.json");
+      const data = await res.json();
+      const examDate = new Date(data.exam_date);
+      showCountdown(examDate);
+      const chapters = data.chapters;
+      calculateStreak(chapters);
+      const books = groupByBook(chapters);
+      const weights = data.book_weights;
+
+      let html = "";
+      for (const book in books) {
+        const bookChapters = books[book];
+        const weight = weights[book] * 100;
+        let total = 0, done = 0;
+
+        bookChapters.forEach(ch => {
+          total += ch.estimated_time_hr;
+          if (ch.progress === 100) done += ch.estimated_time_hr;
+        });
+
+        const percent = total ? Math.round((done / total) * 100) : 0;
+
+        html += `<div class="book">
+          <h2>${book} (${weight}%)</h2>
+          <div class="meta">⏱ Completed ${done}h / ${total}h</div>
+          <div class="progress-container">
+            <div class="progress-bar" style="width:${percent}%">${percent}%</div>
+          </div>
+          <ul>`;
+
+        bookChapters.forEach(ch => {
+          const percentDone = ch.progress;
+          const dateStr = ch.date_read ? `📅 ${ch.date_read}` : "";
+          const revStr = (ch.revisions || []).length > 0 ? `🔁 ${ch.revisions.join(', ')}` : "";
+          html += `<li>
+            <strong>${ch.chapter_code}:</strong> ${ch.title} (${ch.estimated_time_hr}h) ${dateStr} ${revStr}
+            <div class="chapter-bar">
+              <div class="chapter-fill" style="width:${percentDone}%; background:#2196f3">${percentDone}%</div>
+            </div>
+          </li>`;
+        });
+
+        html += "</ul></div>";
+      }
+
+      document.getElementById("status").innerHTML = html;
+    }
+
+    function showCountdown(examDate) {
+      const today = new Date();
+      const diff = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
+      const el = document.getElementById("countdown");
+      el.innerHTML = diff >= 0
+        ? `⏳ <strong>${diff} day${diff !== 1 ? "s" : ""} left until the FRM Part I exam (${examDate.toDateString()})</strong>`
+        : `✅ <strong>Exam was on ${examDate.toDateString()}</strong>`;
+    }
+
+    function calculateStreak(chapters) {
+      const set = new Set(chapters.map(ch => ch.date_read).filter(Boolean));
+      let streak = 0, today = new Date();
+      today.setHours(0, 0, 0, 0);
+      while (set.has(today.toISOString().slice(0, 10))) {
+        streak++;
+        today.setDate(today.getDate() - 1);
+      }
+      document.getElementById("streak").innerHTML = `🔥 <strong>Current Study Streak: ${streak} day${streak !== 1 ? "s" : ""}</strong>`;
+    }
+
+    function groupByBook(chapters) {
+      return chapters.reduce((acc, ch) => {
+        if (!acc[ch.book]) acc[ch.book] = [];
+        acc[ch.book].push(ch);
+        return acc;
+      }, {});
+    }
+
+    function exportCSV() {
+      fetch("progress.json")
+        .then(res => res.json())
+        .then(data => {
+          let csv = "Book,Chapter Code,Title,Done,Estimated Hours,Date Read,Revisions\\n";
+          data.chapters.forEach(ch => {
+            csv += `"${ch.book}","${ch.chapter_code}","${ch.title}",${ch.progress}%,${ch.estimated_time_hr},"${ch.date_read}","${(ch.revisions || []).join("; ")}"\\n`;
+          });
+          const blob = new Blob([csv], { type: "text/csv" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "frm_progress.csv";
+          a.click();
+        });
+    }
+
+    loadProgress();
+  </script>
+</body>
+</html>

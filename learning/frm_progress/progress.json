@@ -1,0 +1,371 @@
+{
+  "exam_date": "2025-11-15",
+  "chapters": [
+    {
+      "book": "Foundations of Risk Management",
+      "chapter_code": "FRM\u20131",
+      "title": "The Building Blocks of Risk Management",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Foundations of Risk Management",
+      "chapter_code": "FRM\u20132",
+      "title": "How Do Firms Manage Financial Risk?",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Foundations of Risk Management",
+      "chapter_code": "FRM\u20133",
+      "title": "Governance and Risk Management",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Foundations of Risk Management",
+      "chapter_code": "FRM\u20134",
+      "title": "Credit Risk Transfer Mechanisms",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Foundations of Risk Management",
+      "chapter_code": "FRM\u20135",
+      "title": "Operational Risk",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Foundations of Risk Management",
+      "chapter_code": "FRM\u20136",
+      "title": "Risk Management Failures",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Foundations of Risk Management",
+      "chapter_code": "FRM\u20137",
+      "title": "Risk Culture and Conduct",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Foundations of Risk Management",
+      "chapter_code": "FRM\u20138",
+      "title": "Enterprise Risk Management and Future Trends",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Quantitative Analysis",
+      "chapter_code": "QA\u20131",
+      "title": "Fundamentals of Probability",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Quantitative Analysis",
+      "chapter_code": "QA\u20132",
+      "title": "Random Variables",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Quantitative Analysis",
+      "chapter_code": "QA\u20133",
+      "title": "Common Probability Distributions",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Quantitative Analysis",
+      "chapter_code": "QA\u20134",
+      "title": "Statistical Inference",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Quantitative Analysis",
+      "chapter_code": "QA\u20135",
+      "title": "Hypothesis Testing",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Quantitative Analysis",
+      "chapter_code": "QA\u20136",
+      "title": "Linear Regression with Single and Multiple Regressors",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Quantitative Analysis",
+      "chapter_code": "QA\u20137",
+      "title": "Machine Learning and Prediction",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u20131",
+      "title": "Banks",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u20132",
+      "title": "Insurance Companies and Pension Plans",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u20133",
+      "title": "Market Indices",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u20134",
+      "title": "Debt Securities",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u20135",
+      "title": "Introduction to Derivatives",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u20136",
+      "title": "Futures and Forwards",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u20137",
+      "title": "Option Strategies",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u20138",
+      "title": "Swaps",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u20139",
+      "title": "Hedging and Trading with Derivatives",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Financial Markets and Products",
+      "chapter_code": "FMP\u201310",
+      "title": "Commodities",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u20131",
+      "title": "Measures of Financial Risk",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u20132",
+      "title": "Calculating and Applying VaR",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u20133",
+      "title": "Extensions of VaR",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u20134",
+      "title": "Backtesting VaR",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u20135",
+      "title": "Stress Testing",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u20136",
+      "title": "Model Risk and Validation",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u20137",
+      "title": "Risk-adjusted Performance Measurement",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u20138",
+      "title": "Credit Risk Measurement and Management",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u20139",
+      "title": "Operational Risk",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u201310",
+      "title": "Risk Capital Attribution and RAROC",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    },
+    {
+      "book": "Valuation and Risk Models",
+      "chapter_code": "VRM\u201311",
+      "title": "Economic Capital",
+      "pages": 30,
+      "estimated_time_hr": 3,
+      "date_read": "",
+      "progress": 0,
+      "revisions": []
+    }
+  ],
+  "book_weights": {
+    "Foundations of Risk Management": 0.2,
+    "Quantitative Analysis": 0.2,
+    "Financial Markets and Products": 0.3,
+    "Valuation and Risk Models": 0.3
+  }
+}
