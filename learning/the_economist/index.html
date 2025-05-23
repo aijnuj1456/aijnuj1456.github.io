@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Finance & Economics</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      margin: 2em auto;
+      max-width: 1100px;
+      background-color: #fdfdfd;
+      color: #111;
+    }
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    body.dark-mode a { color: #90caf9; }
+    body.dark-mode input, body.dark-mode button {
+      background-color: #2a2a2a;
+      color: #e0e0e0;
+      border: 1px solid #555;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 1em;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5em;
+    }
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 40px;
+    }
+    .section {
+      background: #fff;
+      padding: 0 10px;
+    }
+    body.dark-mode .section {
+      background-color: #1e1e1e;
+    }
+    h2 {
+      color: #B80000;
+      font-size: 1.5em;
+    }
+    h3 {
+      font-size: 1.2em;
+      margin-top: 1em;
+      color: #444;
+    }
+    ul {
+      list-style: none;
+      padding-left: 1em;
+      background: #f9f9f9;
+      border-left: 4px solid #ccc;
+      border-radius: 4px;
+      padding: 0.8em 1em;
+    }
+    body.dark-mode ul {
+      background-color: #1e1e1e;
+      border-left-color: #444;
+    }
+    li {
+      margin-bottom: 0.4em;
+      line-height: 1.4;
+    }
+    a {
+      color: #004080;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto 2em auto;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.min.js"></script>
+</head>
+<body>
+  <h1>Finance & Economics</h1>
+  <div class="top-bar">
+    <div>
+      <input id="searchBox" type="text" placeholder="Search articles... (e.g. Wall Street)" style="padding: 8px; width: 300px; font-size: 1em;" />
+      <div id="resultCount" style="font-style: italic; margin-top: 0.3em; color: #666;">🔎 0 results found</div>
+    </div>
+    <button onclick="toggleTheme()" style="padding: 8px 12px; background-color: #004080; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      Toggle Theme
+    </button>
+  </div>
+  <canvas id="word-cloud" width="800" height="400" style="background-color: transparent;"></canvas>
+  <p style="text-align: center; font-style: italic; color: #666;">
+    Word cloud generated from article titles in Buttonwood and Free exchange (The Economist, 2008–2024)
+  </p>
+  <div id="content" class="section-grid"></div>
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle("dark-mode");
+    }
+
+    async function loadArticles() {
+      const response = await fetch("data.json");
+      const data = await response.json();
+      const container = document.getElementById("content");
+      const titles = [];
+
+      for (const section in data) {
+        const div = document.createElement("div");
+        div.className = "section";
+
+        const h2 = document.createElement("h2");
+        h2.textContent = section;
+        div.appendChild(h2);
+
+        const years = Object.keys(data[section]).sort((a, b) => b - a);
+        years.forEach(year => {
+          const h3 = document.createElement("h3");
+          h3.className = "year-header";
+          h3.textContent = year;
+          div.appendChild(h3);
+
+          const ul = document.createElement("ul");
+          data[section][year].forEach(article => {
+            const li = document.createElement("li");
+            const strong = document.createElement("strong");
+            strong.textContent = article.date + ": ";
+            li.appendChild(strong);
+
+            const a = document.createElement("a");
+            a.href = article.link;
+            a.target = "_blank";
+            a.textContent = article.title;
+            titles.push(article.title);
+            li.appendChild(a);
+            ul.appendChild(li);
+          });
+
+          div.appendChild(ul);
+        });
+
+        container.appendChild(div);
+      }
+
+      // Word cloud
+      const wordCounts = {};
+      titles.forEach(title => {
+        title.toLowerCase().split(/\W+/).forEach(word => {
+          if (word.length > 3 && !["economist", "finance", "economics", "article"].includes(word)) {
+            wordCounts[word] = (wordCounts[word] || 0) + 1;
+          }
+        });
+      });
+      const wordList = Object.entries(wordCounts).map(([word, count]) => [word, count]);
+      WordCloud(document.getElementById("word-cloud"), {
+        list: wordList,
+        gridSize: 8,
+        weightFactor: 6,
+        fontFamily: 'Georgia',
+        color: 'random-dark',
+        backgroundColor: getComputedStyle(document.body).backgroundColor
+      });
+
+      // Search
+      document.getElementById("searchBox").addEventListener("input", function () {
+        const filter = this.value.toLowerCase();
+        let count = 0;
+        document.querySelectorAll("li").forEach(function (li) {
+          const match = li.textContent.toLowerCase().includes(filter);
+          li.style.display = match ? "list-item" : "none";
+          if (match) count++;
+        });
+
+        // Hide empty sections
+        document.querySelectorAll(".section").forEach(section => {
+          const visible = Array.from(section.querySelectorAll("li")).some(li => li.style.display !== "none");
+          section.style.display = visible ? "block" : "none";
+        });
+
+        document.querySelectorAll(".year-header").forEach(h3 => {
+          const ul = h3.nextElementSibling;
+          const visible = ul && Array.from(ul.querySelectorAll("li")).some(li => li.style.display !== "none");
+          h3.style.display = visible ? "block" : "none";
+          if (ul) ul.style.display = visible ? "block" : "none";
+        });
+
+        document.getElementById("resultCount").textContent = `🔎 ${count} result${count !== 1 ? 's' : ''} found`;
+      });
+    }
+
+    loadArticles();
+  </script>
+</body>
+</html>
